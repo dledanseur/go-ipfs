@@ -71,13 +71,15 @@ func doMount(node *core.IpfsNode, fsdir, nsdir string) error {
 
 	var wg sync.WaitGroup
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		fsmount, err1 = rofs.Mount(node, fsdir)
-	}()
+	if fsdir != "" {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			fsmount, err1 = rofs.Mount(node, fsdir)
+		}()
+	}
 
-	if node.IsOnline {
+	if nsdir != "" && node.IsOnline {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
